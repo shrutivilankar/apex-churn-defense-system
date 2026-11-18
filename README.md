@@ -62,6 +62,7 @@ uv run pytest -q
 |---|---|
 | **Language** | Python 3.11 |
 | **Framework** | FastAPI |
+| **LLM** | OpenAI SDK — tool-calling agent with structured outputs |
 | **Validation** | Pydantic v2 — strict types at every boundary |
 | **HTTP** | httpx (async) |
 | **Testing** | pytest with in-process stub servers |
@@ -71,7 +72,7 @@ uv run pytest -q
 
 ## Status
 
-The core enrichment pipeline — grievance intake through payment, consumption, and usage history retrieval — is implemented and tested. The LLM retention agent, competitor pricing integration, and refund/credit execution (with human approval) are actively in development.
+The core enrichment pipeline — grievance intake through payment, consumption, and usage history retrieval — is implemented and tested. The risk profiling and scoring engine computes churn risk and subscriber value from enriched signals. The LLM retention agent uses these as tool inputs to reason over recommendations, with competitor pricing and refund/credit execution (human-approved) actively in development.
 
 ---
 
