@@ -1,0 +1,82 @@
+"""TMF635 Product Usage read client (usage history system, consumed)."""
+import os
+
+import httpx
+from pydantic import ValidationError
+
+from src.product_usage.product_usage_models import ProductUsage
+
+PRODUCT_USAGE_PATH = "/productUsage"
+_UPSTREAM_PAGE_SIZE = 100
+_DEFAULT_TIMEOUT = 5.0
+
+
+def usage_history_base_url() -> str:
+    return os.getenv(
+        "USAGE_HISTORY_BASE_URL",
+        "http://127.0.0.1:9003/tmf-api/productUsageManagement/v5",
+    )
+
+
+class ProductUsageClient:
+    _base_url = usage_history_base_url()
+    _transport: httpx.AsyncBaseTransport | None = None
+    _timeout = _DEFAULT_TIMEOUT
+
+    async def list_product_usage(self) -> list[ProductUsage]:
+        """Read every product usage, page by page.
+
+        Stops at X-Total-Count when the upstream sends it, otherwise on a short page.
+        """
+        usages: list[ProductUsage] = []
+        offset = 0
+        while True:
+            page, total = await self._list_page(offset)
+            usages.extend(page)
+            if (total is not None and len(usages) >= total) or (
+                len(page) < _UPSTREAM_PAGE_SIZE
+            ):
+                return usages
+            offset += _UPSTREAM_PAGE_SIZE
+
+    async def _list_page(self, offset: int) -> tuple[list[ProductUsage], int | None]:
+        try:
+            async with httpx.AsyncClient(
+                transport=self._transport, timeout=self._timeout
+            ) as client:
+                resp = await client.get(
+                    f"{self._base_url}{PRODUCT_USAGE_PATH}",
+                    params={"offset": offset, "limit": _UPSTREAM_PAGE_SIZE},
+                )
+        except httpx.HTTPError as exc:
+            raise UpstreamError(502, "Usage history system unavailable", str(exc)) from exc
+
+        if resp.status_code != 200:
+            raise UpstreamError(502, "Usage history system error", _upstream_message(resp))
+
+        try:
+            payload = resp.json()
+            total_header = resp.headers.get("X-Total-Count")
+            return (
+                [ProductUsage.model_validate(item) for item in payload],
+                int(total_header) if total_header else None,
+            )
+        except (ValueError, TypeError, ValidationError) as exc:
+            raise UpstreamError(502, "Malformed usage history response", str(exc)) from exc
+
+
+def _upstream_message(resp: httpx.Response) -> str:
+    try:
+        return str(resp.json().get("reason") or resp.text)
+    except (ValueError, AttributeError):
+        return resp.text
+
+
+class UpstreamError(Exception):
+    """Non-2xx or unusable response from the usage history system."""
+
+    def __init__(self, status_code: int, reason: str, message: str = ""):
+        super().__init__(message or reason)
+        self.status_code = status_code
+        self.reason = reason
+        self.message = message
