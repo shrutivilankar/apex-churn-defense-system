@@ -25,3 +25,9 @@ Thumbs.db
 
 # Environment
 .env
+
+# Internal build specs (not for public)
+AGENTS.md
+
+#tmf
+tmf-api-yamls/
