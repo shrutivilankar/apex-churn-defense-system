@@ -36,6 +36,4 @@ async def create_trouble_ticket(body: TroubleTicketCreate):
     )
     ticket_store[ticket_id] = ticket
 
-
-
     return ticket
