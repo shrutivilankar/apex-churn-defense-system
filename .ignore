@@ -1,0 +1,7 @@
+/docs/**
+/src/payment/**
+/src/product_usage/**
+
+/tmf-api-yamls/user-guides/**
+
+README.md

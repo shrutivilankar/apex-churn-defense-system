@@ -2,6 +2,8 @@
 
 Run with: uv run uvicorn stubs.billing:app --port 9001
 """
+from datetime import datetime, timezone
+
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
 
@@ -122,3 +124,52 @@ def retrieve_payment(payment_id: str):
             "status": "404",
         },
     )
+
+
+REFUNDS: list[dict] = []
+
+
+def _error(status_code: int, reason: str, message: str) -> JSONResponse:
+    return JSONResponse(
+        status_code=status_code,
+        content={
+            "code": f"ERR{status_code}",
+            "reason": reason,
+            "message": message,
+            "status": str(status_code),
+        },
+    )
+
+
+@app.post("/payment/v4/refund", status_code=201)
+def create_refund(body: dict):
+    missing = [
+        field
+        for field in ("account", "paymentMethod", "totalAmount")
+        if not body.get(field)
+    ]
+    if missing:
+        return _error(
+            400, "Invalid input", f"missing required field(s): {', '.join(missing)}"
+        )
+
+    total_amount = body["totalAmount"]
+    value = total_amount.get("value")
+    if not isinstance(value, (int, float)) or value <= 0:
+        return _error(400, "Invalid input", "totalAmount.value must be > 0")
+
+    refund_id = f"ref-{len(REFUNDS) + 1:04d}"
+    refund = {
+        "id": refund_id,
+        "href": f"/payment/v4/refund/{refund_id}",
+        "account": body["account"],
+        "paymentMethod": body["paymentMethod"],
+        "totalAmount": total_amount,
+        "refundDate": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "status": "done",
+    }
+    for field in ("amount", "taxAmount", "description", "name", "correlatorId"):
+        if body.get(field) is not None:
+            refund[field] = body[field]
+    REFUNDS.append(refund)
+    return refund
