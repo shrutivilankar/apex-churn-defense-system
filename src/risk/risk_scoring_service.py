@@ -19,7 +19,7 @@ def score_risk_profile(profile: SubscriberRiskProfile) -> RiskScore:
         "major": 2,
         "minor": 1,
     }
-    if profile.grievance_max_severity in severity_points:
+    if profile.grievance_max_severity:
         churn_rules["grievance_severity"] = severity_points[
             profile.grievance_max_severity
         ]

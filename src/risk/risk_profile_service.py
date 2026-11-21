@@ -6,7 +6,7 @@ data gap instead of failing the whole evaluation.
 """
 import asyncio
 from datetime import datetime, timedelta, timezone
-from typing import Iterable, Optional
+from typing import Iterable, Optional, TypeVar
 
 from src.models.trouble_ticket_models import TroubleTicket
 from src.payment.payment_client import PaymentClient
@@ -15,7 +15,7 @@ from src.payment.payment_service import get_payment_history
 from src.product_usage.product_usage_client import ProductUsageClient
 from src.product_usage.product_usage_models import ProductUsage
 from src.product_usage.product_usage_service import get_usage_history
-from src.risk.risk_models import Severity, SubscriberRiskProfile
+from src.risk.risk_models import Severity, SourceStatus, SubscriberRiskProfile
 from src.store import ticket_store
 from src.usage.usage_client import UsageConsumptionClient
 from src.usage.usage_models import UsageConsumptionReport
@@ -40,9 +40,6 @@ async def evaluate_risk_profile(
     tickets: Optional[Iterable[TroubleTicket]] = None,
 ) -> SubscriberRiskProfile:
     """Assemble one subscriber's risk profile from all available sources."""
-    if not party_id:
-        raise ValueError("party_id is required")
-
     evaluated_at = _as_utc(now) or datetime.now(timezone.utc)
     payment_client = payment_client or PaymentClient()
     usage_client = usage_client or UsageConsumptionClient()
@@ -56,7 +53,7 @@ async def evaluate_risk_profile(
         return_exceptions=True,
     )
 
-    sources: dict[str, str] = {}
+    sources: dict[str, SourceStatus] = {}
     data_gaps: list[str] = []
 
     payments = _resolve(payments_result, _PAYMENT, sources, data_gaps, [])
@@ -138,7 +135,16 @@ async def _all_product_usage(
         offset += _PAGE_SIZE
 
 
-def _resolve(result, source, sources, data_gaps, empty):
+T = TypeVar("T")
+
+
+def _resolve(
+    result: list[T] | BaseException,
+    source: str,
+    sources: dict[str, SourceStatus],
+    data_gaps: list[str],
+    empty: list[T],
+) -> list[T]:
     if isinstance(result, Exception):
         sources[source] = "unavailable"
         data_gaps.append(source)
