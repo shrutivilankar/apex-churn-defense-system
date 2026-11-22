@@ -4,8 +4,8 @@ import uuid
 import pytest
 from fastapi.testclient import TestClient
 
-from src.main import app
-from src.store import ticket_store
+from apex_churn_defense.main import app
+from apex_churn_defense.store import ticket_store
 
 BASE = "/tmf-api/troubleTicket/v5"
 client = TestClient(app)

@@ -51,7 +51,7 @@ Reviewed against:
 **Fails.**
 
 - **`src/workflow.py` is broken and should not have been committed.**
-  Verified: `import src.workflow` raises
+  Verified: `import apex_churn_defense.workflow` raises
   `ModuleNotFoundError: No module named 'langraph'`.
   - `:1` typo `langraph` (dependency added is `langgraph`).
   - `:9`, `:24` reference `ChurnDefenseState` and `TroubleTicketCreate`
@@ -81,7 +81,7 @@ Reviewed against:
 ## Verification
 
 - `uv run pytest -q` → **17 passed** (risk profile/scoring are green).
-- `import src.workflow` → **fails**; no test covers it.
+- `import apex_churn_defense.workflow` → **fails**; no test covers it.
 
 ## Verdict
 

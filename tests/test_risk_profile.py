@@ -5,11 +5,11 @@ from datetime import datetime, timezone
 import httpx
 import pytest
 
-from src.models.trouble_ticket_models import PartyRef, RelatedParty, TroubleTicket
-from src.payment.payment_client import PaymentClient
-from src.product_usage.product_usage_client import ProductUsageClient
-from src.risk.risk_profile_service import evaluate_risk_profile
-from src.usage.usage_client import UsageConsumptionClient
+from apex_churn_defense.models.trouble_ticket_models import PartyRef, RelatedParty, TroubleTicket
+from apex_churn_defense.payment.payment_client import PaymentClient
+from apex_churn_defense.product_usage.product_usage_client import ProductUsageClient
+from apex_churn_defense.risk.risk_profile_service import evaluate_risk_profile
+from apex_churn_defense.usage.usage_client import UsageConsumptionClient
 from stubs.billing import app as billing_stub
 from stubs.charging import app as charging_stub
 from stubs.usage_history import app as usage_history_stub

@@ -45,8 +45,16 @@ Each recommendation carries the complete chain: which signals triggered it, whic
 # Install dependencies
 uv sync
 
-# Run the server
+# Run the server and stub one by one 
 uv run uvicorn src.main:app --reload --port 8080
+
+#Or run all servers and stubs on bash at once
+(trap 'kill 0' SIGINT; \
+uv run uvicorn stubs.billing:app --port 9001 & \
+uv run uvicorn stubs.charging:app --port 9002 & \
+uv run uvicorn stubs.usage_history:app --port 9003 & \
+uv run uvicorn stubs.catalog:app --port 9005 & \
+uv run uvicorn apex_churn_defense.main:app --reload --port 8080)
 
 # Run tests
 uv run pytest -q

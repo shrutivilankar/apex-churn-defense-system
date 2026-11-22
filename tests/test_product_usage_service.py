@@ -4,8 +4,8 @@ import asyncio
 import httpx
 import pytest
 
-from src.product_usage.product_usage_client import ProductUsageClient, UpstreamError
-from src.product_usage.product_usage_service import get_usage_history
+from apex_churn_defense.product_usage.product_usage_client import ProductUsageClient, UpstreamError
+from apex_churn_defense.product_usage.product_usage_service import get_usage_history
 from stubs.usage_history import app as usage_history_stub
 
 

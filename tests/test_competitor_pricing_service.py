@@ -4,8 +4,8 @@ import asyncio
 import httpx
 import pytest
 
-from src.competitor.competitor_client import CompetitorPricingClient, UpstreamError
-from src.competitor.competitor_service import get_competitor_offers
+from apex_churn_defense.competitor.competitor_client import CompetitorPricingClient, UpstreamError
+from apex_churn_defense.competitor.competitor_service import get_competitor_offers
 from stubs.competitor_pricing import app as competitor_stub
 
 

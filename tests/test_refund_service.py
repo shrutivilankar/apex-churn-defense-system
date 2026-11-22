@@ -4,9 +4,9 @@ import asyncio
 import httpx
 import pytest
 
-from src.payment.payment_models import AccountRef, Money, PaymentMethodRef
-from src.refund.refund_client import RefundClient
-from src.refund.refund_service import (
+from apex_churn_defense.payment.payment_models import AccountRef, Money, PaymentMethodRef
+from apex_churn_defense.refund.refund_client import RefundClient
+from apex_churn_defense.refund.refund_service import (
     RefundApprovalRequired,
     approve_refund,
     execute_approved_refund,

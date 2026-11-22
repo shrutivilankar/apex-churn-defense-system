@@ -4,8 +4,8 @@ import asyncio
 import httpx
 import pytest
 
-from src.payment.payment_client import PaymentClient, UpstreamError
-from src.payment.payment_service import get_payment_history
+from apex_churn_defense.payment.payment_client import PaymentClient, UpstreamError
+from apex_churn_defense.payment.payment_service import get_payment_history
 from stubs.billing import app as billing_stub
 
 

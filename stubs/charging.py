@@ -151,6 +151,78 @@ REPORTS = [
             }
         ],
     },
+    {
+        "id": "ucr-0004",
+        "href": "/tmf-api/usageConsumption/v5/usageConsumptionReport/ucr-0004",
+        "name": "November usage report for subscriber 456",
+        "description": "Current month: 10 GB bucket nearly exhausted early despite throttled speeds",
+        "creationDate": "2026-11-15T08:00:00Z",
+        "lastUpdate": "2026-11-15T08:00:00Z",
+        "relatedParty": [
+            {
+                "role": "customer",
+                "partyOrPartyRole": {
+                    "id": "sub-456",
+                    "name": "Subscriber 456",
+                    "@referredType": "Party",
+                },
+            }
+        ],
+        "bucket": [
+            {
+                "id": "bkt-data-456",
+                "name": "Premium 10 GB data",
+                "usageType": "data",
+                "isShared": False,
+                "remainingValue": {"amount": 0.4, "units": "GB"},
+                "remainingValueName": "0.4 GB remaining",
+                "validFor": {
+                    "startDateTime": "2026-11-01T00:00:00Z",
+                    "endDateTime": "2026-11-30T23:59:59Z",
+                },
+                "bucketCounter": [
+                    {
+                        "counterType": "used",
+                        "level": "global",
+                        "value": {"amount": 9.6, "units": "GB"},
+                        "valueName": "9.6 GB used",
+                    }
+                ],
+            }
+        ],
+    },
+    {
+        "id": "ucr-0005",
+        "href": "/tmf-api/usageConsumption/v5/usageConsumptionReport/ucr-0005",
+        "name": "October usage report for subscriber 456",
+        "description": "Previous month: exceeded the 10 GB bucket by 4 GB",
+        "creationDate": "2026-10-15T08:00:00Z",
+        "relatedParty": [
+            {
+                "role": "customer",
+                "partyOrPartyRole": {
+                    "id": "sub-456",
+                    "name": "Subscriber 456",
+                    "@referredType": "Party",
+                },
+            }
+        ],
+        "bucket": [
+            {
+                "id": "bkt-data-oct-456",
+                "name": "Premium 10 GB data",
+                "usageType": "data",
+                "remainingValue": {"amount": 0.0, "units": "GB"},
+                "bucketCounter": [
+                    {
+                        "counterType": "used",
+                        "level": "global",
+                        "value": {"amount": 14.0, "units": "GB"},
+                    }
+                ],
+            }
+        ],
+    },
 ]
 
 

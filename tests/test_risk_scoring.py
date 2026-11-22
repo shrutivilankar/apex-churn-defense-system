@@ -1,9 +1,9 @@
 """Rubric tests for deterministic risk scoring - internal package."""
 from datetime import datetime, timezone
 
-from src.payment.payment_models import Money
-from src.risk.risk_models import SubscriberRiskProfile
-from src.risk.risk_scoring_service import score_risk_profile
+from apex_churn_defense.payment.payment_models import Money
+from apex_churn_defense.risk.risk_models import SubscriberRiskProfile
+from apex_churn_defense.risk.risk_scoring_service import score_risk_profile
 
 NOW = datetime(2026, 11, 20, tzinfo=timezone.utc)
 

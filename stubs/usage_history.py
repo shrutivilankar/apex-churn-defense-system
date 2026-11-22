@@ -169,6 +169,151 @@ PRODUCT_USAGES = [
             "version": "1.0",
         },
     },
+    {
+        "@type": "ProductUsage",
+        "id": "pu-0005",
+        "href": "/tmf-api/productUsageManagement/v5/productUsage/pu-0005",
+        "creationDate": "2026-11-10T19:30:00Z",
+        "status": "failed",
+        "usageType": "DataSession",
+        "usageCharacteristic": [
+            {"@type": "FloatCharacteristic", "name": "volume", "value": 8.0},
+            {"@type": "StringCharacteristic", "name": "units", "value": "GB"},
+            {"@type": "StringCharacteristic", "name": "throttleReason", "value": "peakHourPolicy"},
+        ],
+        "relatedParty": [
+            {
+                "role": "customer",
+                "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "@referredType": "Party",
+                    "id": "sub-456",
+                    "name": "Subscriber 456",
+                },
+            }
+        ],
+        "product": {
+            "@type": "ProductRef",
+            "@referredType": "Product",
+            "id": "prod-premium-456",
+            "name": "Premium 10 GB plan",
+        },
+        "usageSpecification": {
+            "@type": "ProductUsageSpecificationRef",
+            "@referredType": "ProductUsageSpecification",
+            "id": "pus-data",
+            "name": "DataSession",
+            "version": "1.0",
+        },
+    },
+    {
+        "@type": "ProductUsage",
+        "id": "pu-0006",
+        "href": "/tmf-api/productUsageManagement/v5/productUsage/pu-0006",
+        "creationDate": "2026-10-18T20:00:00Z",
+        "status": "rated",
+        "usageType": "DataSession",
+        "usageCharacteristic": [
+            {"@type": "FloatCharacteristic", "name": "volume", "value": 6.2},
+            {"@type": "StringCharacteristic", "name": "units", "value": "GB"},
+        ],
+        "relatedParty": [
+            {
+                "role": "customer",
+                "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "@referredType": "Party",
+                    "id": "sub-456",
+                    "name": "Subscriber 456",
+                },
+            }
+        ],
+        "product": {
+            "@type": "ProductRef",
+            "@referredType": "Product",
+            "id": "prod-premium-456",
+            "name": "Premium 10 GB plan",
+        },
+        "usageSpecification": {
+            "@type": "ProductUsageSpecificationRef",
+            "@referredType": "ProductUsageSpecification",
+            "id": "pus-data",
+            "name": "DataSession",
+            "version": "1.0",
+        },
+    },
+    {
+        "@type": "ProductUsage",
+        "id": "pu-0007",
+        "href": "/tmf-api/productUsageManagement/v5/productUsage/pu-0007",
+        "creationDate": "2026-10-05T19:15:00Z",
+        "status": "rated",
+        "usageType": "DataSession",
+        "usageCharacteristic": [
+            {"@type": "FloatCharacteristic", "name": "volume", "value": 7.4},
+            {"@type": "StringCharacteristic", "name": "units", "value": "GB"},
+        ],
+        "relatedParty": [
+            {
+                "role": "customer",
+                "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "@referredType": "Party",
+                    "id": "sub-456",
+                    "name": "Subscriber 456",
+                },
+            }
+        ],
+        "product": {
+            "@type": "ProductRef",
+            "@referredType": "Product",
+            "id": "prod-premium-456",
+            "name": "Premium 10 GB plan",
+        },
+        "usageSpecification": {
+            "@type": "ProductUsageSpecificationRef",
+            "@referredType": "ProductUsageSpecification",
+            "id": "pus-data",
+            "name": "DataSession",
+            "version": "1.0",
+        },
+    },
+    {
+        "@type": "ProductUsage",
+        "id": "pu-0008",
+        "href": "/tmf-api/productUsageManagement/v5/productUsage/pu-0008",
+        "creationDate": "2026-09-28T21:00:00Z",
+        "status": "rated",
+        "usageType": "DataSession",
+        "usageCharacteristic": [
+            {"@type": "FloatCharacteristic", "name": "volume", "value": 5.8},
+            {"@type": "StringCharacteristic", "name": "units", "value": "GB"},
+        ],
+        "relatedParty": [
+            {
+                "role": "customer",
+                "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "@referredType": "Party",
+                    "id": "sub-456",
+                    "name": "Subscriber 456",
+                },
+            }
+        ],
+        "product": {
+            "@type": "ProductRef",
+            "@referredType": "Product",
+            "id": "prod-premium-456",
+            "name": "Premium 10 GB plan",
+        },
+        "usageSpecification": {
+            "@type": "ProductUsageSpecificationRef",
+            "@referredType": "ProductUsageSpecification",
+            "id": "pus-data",
+            "name": "DataSession",
+            "version": "1.0",
+        },
+    },
 ]
 
 

@@ -4,8 +4,8 @@ import asyncio
 import httpx
 import pytest
 
-from src.usage.usage_client import UpstreamError, UsageConsumptionClient
-from src.usage.usage_service import get_usage_consumption
+from apex_churn_defense.usage.usage_client import UpstreamError, UsageConsumptionClient
+from apex_churn_defense.usage.usage_service import get_usage_consumption
 from stubs.charging import app as charging_stub
 
 

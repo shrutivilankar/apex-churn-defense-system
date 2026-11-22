@@ -5,7 +5,13 @@ requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.163.2",
     "httpx>=0.28.1",
+    "langchain>=1.5.2",
+    "langchain-openai>=1.8.5",
+    "langchain-openrouter>=0.3.0",
+    "langfuse>=5.2.0",
     "langgraph>=1.2.24",
+    "langgraph-checkpoint-sqlite>=3.1.3",
+    "structlog>=26.1.0",
     "uvicorn[standard]>=0.54.0",
 ]
 
@@ -16,3 +22,10 @@ dev = [
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/apex_churn_defense"]
