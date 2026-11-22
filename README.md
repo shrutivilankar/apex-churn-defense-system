@@ -58,6 +58,9 @@ uv run uvicorn apex_churn_defense.main:app --reload --port 8080)
 
 # Run tests
 uv run pytest -q
+
+# Run end to end functionality
+uv run python tests/end_to_end_flow.py
 ```
 
 > Requires **Python 3.11+** and **[uv](https://docs.astral.sh/uv/)**. Tests run against in-process stubs — no external services needed.
@@ -73,6 +76,7 @@ uv run pytest -q
 | **Agent Orchestration** | LangGraph — stateful workflow graph with SQLite checkpointing |
 | **LLM** | LangChain + OpenAI SDK via OpenRouter — tool-calling agent with structured outputs |
 | **Observability** | Langfuse — end-to-end tracing of every workflow run |
+| **Evals** | Langfuse Experiments — dataset-driven end-to-end evaluation of agent output |
 | **Validation** | Pydantic v2 — strict types at every boundary |
 | **HTTP** | httpx (async) |
 | **Logging** | structlog |

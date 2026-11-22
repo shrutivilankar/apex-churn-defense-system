@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import httpx
 import pytest
 
+import apex_churn_defense.risk.risk_profile_service as risk_profile_service
 from apex_churn_defense.models.trouble_ticket_models import PartyRef, RelatedParty, TroubleTicket
 from apex_churn_defense.payment.payment_client import PaymentClient
 from apex_churn_defense.product_usage.product_usage_client import ProductUsageClient
@@ -17,14 +18,21 @@ from stubs.usage_history import app as usage_history_stub
 NOW = datetime(2026, 11, 20, tzinfo=timezone.utc)
 
 
-def _clients():
-    payment = PaymentClient()
-    payment._transport = httpx.ASGITransport(app=billing_stub)
-    usage = UsageConsumptionClient()
-    usage._transport = httpx.ASGITransport(app=charging_stub)
-    product = ProductUsageClient()
-    product._transport = httpx.ASGITransport(app=usage_history_stub)
-    return payment, usage, product
+class _FrozenDatetime(datetime):
+    @classmethod
+    def now(cls, tz=None):
+        return NOW if tz is None else NOW.astimezone(tz)
+
+
+def _stub_upstreams(monkeypatch):
+    monkeypatch.setattr(risk_profile_service, "datetime", _FrozenDatetime)
+    monkeypatch.setattr(PaymentClient, "_transport", httpx.ASGITransport(app=billing_stub))
+    monkeypatch.setattr(
+        UsageConsumptionClient, "_transport", httpx.ASGITransport(app=charging_stub)
+    )
+    monkeypatch.setattr(
+        ProductUsageClient, "_transport", httpx.ASGITransport(app=usage_history_stub)
+    )
 
 
 def _ticket(ticket_id, party_id, severity, created):
@@ -41,8 +49,8 @@ def _ticket(ticket_id, party_id, severity, created):
     )
 
 
-def test_risk_profile_happy_path():
-    payment, usage, product = _clients()
+def test_risk_profile_happy_path(monkeypatch):
+    _stub_upstreams(monkeypatch)
     tickets = [
         _ticket("t-1", "sub-123", "Critical", datetime(2026, 11, 1, tzinfo=timezone.utc)),
         _ticket("t-2", "sub-123", "Minor", datetime(2026, 10, 1, tzinfo=timezone.utc)),
@@ -53,10 +61,6 @@ def test_risk_profile_happy_path():
     profile = asyncio.run(
         evaluate_risk_profile(
             "sub-123",
-            now=NOW,
-            payment_client=payment,
-            usage_client=usage,
-            product_usage_client=product,
             tickets=tickets,
         )
     )
@@ -83,21 +87,16 @@ def test_risk_profile_happy_path():
     }
 
 
-def test_risk_profile_degrades_when_payment_upstream_fails():
+def test_risk_profile_degrades_when_payment_upstream_fails(monkeypatch):
     def failing(request: httpx.Request) -> httpx.Response:
         return httpx.Response(500, json={"code": "ERR500", "reason": "billing exploded"})
 
-    payment = PaymentClient()
-    payment._transport = httpx.MockTransport(failing)
-    _, usage, product = _clients()
+    _stub_upstreams(monkeypatch)
+    monkeypatch.setattr(PaymentClient, "_transport", httpx.MockTransport(failing))
 
     profile = asyncio.run(
         evaluate_risk_profile(
             "sub-123",
-            now=NOW,
-            payment_client=payment,
-            usage_client=usage,
-            product_usage_client=product,
             tickets=[],
         )
     )

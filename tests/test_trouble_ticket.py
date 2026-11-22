@@ -1,11 +1,11 @@
 """Functional tests for TMF621 POST /troubleTicket — Package 1.1."""
-import uuid
-
 import pytest
 from fastapi.testclient import TestClient
 
+from apex_churn_defense import routes
 from apex_churn_defense.main import app
 from apex_churn_defense.store import ticket_store
+from apex_churn_defense.workflow import LLMResponse
 
 BASE = "/tmf-api/troubleTicket/v5"
 client = TestClient(app)
@@ -33,21 +33,29 @@ def _payload():
     }
 
 
-def test_create_ticket_happy_path():
+def test_create_ticket_happy_path(monkeypatch):
+    recommendation = LLMResponse(
+        recommended_offers=["OFFER-DATA-50"],
+        recommended_refund=[25.0],
+        recommendation_description="Apply a one-time credit and offer a larger data plan.",
+    )
+
+    async def _fake_workflow(ticket):
+        return {"structured_response": recommendation}
+
+    monkeypatch.setattr(routes, "run_churn_defence_workflow", _fake_workflow)
+
     resp = client.post(f"{BASE}/troubleTicket", json=_payload())
 
     assert resp.status_code == 201
-    body = resp.json()
-    uuid.UUID(body["id"])
-    assert body["href"] == f"{BASE}/troubleTicket/{body['id']}"
-    assert body["status"] == "acknowledged"
-    assert body["name"] == "Overage complaint"
-    assert body["relatedParty"][0]["partyOrPartyRole"]["id"] == "sub-123"
-    assert body["creationDate"]
-    assert body["lastUpdate"]
-    assert body["statusChangeDate"]
-    assert body["ticketType"] == "Bill Dispute"
-    assert "resolutionDate" not in body
+    assert resp.json() == {
+        "recommended_offers": ["OFFER-DATA-50"],
+        "recommended_refund": [25.0],
+        "recommendation_description": (
+            "Apply a one-time credit and offer a larger data plan."
+        ),
+    }
+    assert len(ticket_store) == 1
 
 
 def test_create_ticket_missing_severity_returns_tmf_400():
